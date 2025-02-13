@@ -102,5 +102,3 @@ When designing your application, it's crucial to follow macOS design principles 
 2. Test your application thoroughly before submitting.
 3. Update this README if you add any new dependencies or require any additional setup steps.
 4. Have fun and be creative, but always prioritize user experience and consistency with the macOS aesthetic!
-
-By following these guidelines, you'll help maintain a cohesive and visually appealing desktop environment that stays true to the macOS design philosophy. Happy coding!
