@@ -24,11 +24,33 @@ import CSSGradientGenerator from './CSSGradientGenerator';
 import RegexTester from './RegexTester';
 import Base64EncoderDecoder from './Base64EncoderDecoder';
 import URLParser from './URLParser';
+import FaviconGenerator from './FaviconGenerator';
+import DnsLookup from './DnsLookup';
+import ImageConverter from './ImageConverter';
+import DevTools from './DevTools';
 const appConfig = [
   {
     name: 'Shader Cards',
     icon: '🃏', // Card emoji
     component: GoldenShinyCard3D,
+    defaultSize: { width: 800, height: 600 }
+  },
+  {
+    name: 'Dev Tools',
+    icon: '🛠️',
+    component: DevTools,
+    defaultSize: { width: 800, height: 600 }
+  },
+  {
+    name: 'Image Converter',
+    icon: '🖼️',
+    component: ImageConverter,
+    defaultSize: { width: 600, height: 600 }
+  },
+  {
+    name: 'DNS Lookup',
+    icon: '🌐',
+    component: DnsLookup,
     defaultSize: { width: 800, height: 600 }
   },
   {
@@ -49,6 +71,12 @@ const appConfig = [
     icon: '📄', // Alternatively use '🔐' for lock icon
     component: Base64EncoderDecoder,
     defaultSize: { width: 600, height: 500 }
+  },
+  {
+    name: 'Favicon Generator',
+    icon: '🖼️',
+    component: FaviconGenerator,
+    defaultSize: { width: 640, height: 480 }
   },
   {
     name: 'Regex Tester',
@@ -177,11 +205,18 @@ const appConfig = [
   },
   {
     name: 'File Manager',
-    icon: '📁', // 或者使用自定义图标
+    icon: '📁', 
     component: FileManagerApp,
     defaultSize: { width: 800, height: 600 },
     showInDock: true,
   },
+  {
+    name: 'Notepad',
+    icon: '📝',
+    component: Notepad,
+    defaultSize: { width: 600, height: 400 },
+    showInDock: true,
+  }
 ];
 
 export default appConfig;
