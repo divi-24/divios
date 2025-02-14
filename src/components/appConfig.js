@@ -29,6 +29,7 @@ import DnsLookup from './DnsLookup';
 import ImageConverter from './ImageConverter';
 import DevTools from './DevTools';
 import CSSHelper from './CSSHelper';
+import FrameworkExplorer from './FrameworkExplorer';
 const appConfig = [
   {
     name: 'Shader Cards',
@@ -191,6 +192,12 @@ const appConfig = [
     component: VSCodeApp,
     defaultSize: { width: 1024, height: 768 },
     showInDock: true,
+  },
+  {
+    name: 'Framework Explorer',
+    icon: '📚', // Emoji for learning/books
+    component: FrameworkExplorer,
+    defaultSize: { width: 800, height: 600 },
   },
   {
     name: '2048',
