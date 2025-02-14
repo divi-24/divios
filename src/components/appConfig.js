@@ -28,6 +28,7 @@ import FaviconGenerator from './FaviconGenerator';
 import DnsLookup from './DnsLookup';
 import ImageConverter from './ImageConverter';
 import DevTools from './DevTools';
+import CSSHelper from './CSSHelper';
 const appConfig = [
   {
     name: 'Shader Cards',
@@ -209,6 +210,12 @@ const appConfig = [
     component: FileManagerApp,
     defaultSize: { width: 800, height: 600 },
     showInDock: true,
+  },
+  {
+    name: 'CSS Helper',
+    icon: '🎨', // Or use a CSS-related emoji like '🖌️'
+    component: CSSHelper,
+    defaultSize: { width: 800, height: 600 }
   },
   {
     name: 'Notepad',
