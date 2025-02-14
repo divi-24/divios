@@ -12,12 +12,18 @@ import Launchpad from './Launchpad';
 import Game2048 from './Game2048';
 import Tetris from './Tetris';
 import FileManagerApp from './FileManagerApp';
+import JsonToTsConverter from './JsonToTsConverter';
 import MessageApp from './MessageApp';
 import MapApp from './MapApp';
 import VideoPlayer from './VideoPlayer';
 import ReactPlayground from './ReactPlayground';
 import AIAssistantApp from './AIAssistantApp/AIAssistantApp';
 import GoldenShinyCard3D  from './ShinyCard3D';
+import JSONFormatter from './JSONFormatter';
+import CSSGradientGenerator from './CSSGradientGenerator';
+import RegexTester from './RegexTester';
+import Base64EncoderDecoder from './Base64EncoderDecoder';
+import URLParser from './URLParser';
 const appConfig = [
   {
     name: 'Shader Cards',
@@ -26,11 +32,35 @@ const appConfig = [
     defaultSize: { width: 800, height: 600 }
   },
   {
+    name: 'URL Parser',
+    icon: '🌐',
+    component: URLParser,
+    defaultSize: { width: 700, height: 600 }
+  },
+  {
     name: 'AI Assistant',
     icon: '🤖',
     component: AIAssistantApp,
     defaultSize: { width: 1200, height: 600 },
     showInDock: true,
+  },
+  {
+    name: 'Base64 Converter',
+    icon: '📄', // Alternatively use '🔐' for lock icon
+    component: Base64EncoderDecoder,
+    defaultSize: { width: 600, height: 500 }
+  },
+  {
+    name: 'Regex Tester',
+    icon: '🔍',
+    component: RegexTester,
+    defaultSize: { width: 600, height: 400 }
+  },
+  {
+    name: 'JSON Formatter',
+    icon: '🔧', // Wrench emoji for tools
+    component: JSONFormatter,
+    defaultSize: { width: 800, height: 600 }
   },
   {
     name: 'React Playground',
@@ -44,6 +74,12 @@ const appConfig = [
     icon: '🎞️',
     component: VideoPlayer,
     defaultSize: { width: 800, height: 600 }
+  },
+  {
+    name: 'CSS Gradient',
+    icon: '🌈',
+    component: CSSGradientGenerator,
+    defaultSize: { width: 600, height: 600 }
   },
   {
     name: 'Map',
@@ -64,6 +100,12 @@ const appConfig = [
     component: ({ onClose }) => <div>This is the Finder window content.</div>,
     defaultSize: { width: 600, height: 400 },
     showInDock: false,
+  },
+  {
+    name: 'JSON to TS Converter',
+    icon: '🔄', 
+    component: JsonToTsConverter,
+    defaultSize: { width: 600, height: 400 }
   },
   {
     name: 'Safari',
