@@ -44,19 +44,19 @@ const appConfig = [
   },
   {
     name: 'Image Converter',
-    icon: '🖼️',
+    icon: 'IMG',
     component: ImageConverter,
     defaultSize: { width: 600, height: 600 }
   },
   {
     name: 'DNS Lookup',
-    icon: '🌐',
+    icon: 'DNS',
     component: DnsLookup,
     defaultSize: { width: 800, height: 600 }
   },
   {
     name: 'URL Parser',
-    icon: '🌐',
+    icon: 'URL',
     component: URLParser,
     defaultSize: { width: 700, height: 600 }
   },
