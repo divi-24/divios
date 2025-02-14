@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap, useMapEvents } from 'react-leaflet';
-import { Search, MapPin, Layers, Navigation, Trash, Info } from 'lucide-react';
+import { Search, MapPin, Layers, Navigation, Trash, Info, X, Edit, Save } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -45,9 +45,11 @@ const MapApp = () => {
   const [mapLayer, setMapLayer] = useState('streets');
   const [route, setRoute] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState(null);
+  const [isEditingMarker, setIsEditingMarker] = useState(false);
+  const [routeInfo, setRouteInfo] = useState(null);
 
   const handleAddMarker = useCallback((location) => {
-    setMarkers(prevMarkers => [...prevMarkers, { ...location, id: Date.now() }]);
+    setMarkers(prevMarkers => [...prevMarkers, { ...location, id: Date.now(), label: `Marker ${prevMarkers.length + 1}` }]);
   }, []);
 
   const handleSearch = useCallback(async () => {
@@ -72,6 +74,10 @@ const MapApp = () => {
         const data = await response.json();
         if (data.routes && data.routes.length > 0) {
           setRoute(data.routes[0].geometry.coordinates.map(coord => [coord[1], coord[0]]));
+          setRouteInfo({
+            distance: (data.routes[0].distance / 1000).toFixed(2) + ' km',
+            duration: (data.routes[0].duration / 60).toFixed(2) + ' min'
+          });
         }
       } catch (error) {
         console.error('Error fetching route:', error);
@@ -82,6 +88,7 @@ const MapApp = () => {
   const handleClearMarkers = useCallback(() => {
     setMarkers([]);
     setRoute(null);
+    setRouteInfo(null);
   }, []);
 
   const handleMarkerClick = useCallback((marker) => {
@@ -90,7 +97,24 @@ const MapApp = () => {
 
   const handleClosePopup = useCallback(() => {
     setSelectedMarker(null);
+    setIsEditingMarker(false);
   }, []);
+
+  const handleEditMarker = useCallback(() => {
+    setIsEditingMarker(true);
+  }, []);
+
+  const handleSaveMarker = useCallback((newLabel) => {
+    setMarkers(markers.map(marker => 
+      marker.id === selectedMarker.id ? { ...marker, label: newLabel } : marker
+    ));
+    setIsEditingMarker(false);
+  }, [markers, selectedMarker]);
+
+  const handleDeleteMarker = useCallback((markerId) => {
+    setMarkers(markers.filter(marker => marker.id !== markerId));
+    setSelectedMarker(null);
+  }, [markers]);
 
   return (
     <div className="flex flex-col h-full bg-gray-100 rounded-lg overflow-hidden shadow-lg">
@@ -134,6 +158,7 @@ const MapApp = () => {
             <Marker key={marker.id} position={marker} eventHandlers={{ click: () => handleMarkerClick(marker) }}>
               <Popup>
                 <div>
+                  <strong>{marker.label}</strong><br />
                   Latitude: {marker.lat.toFixed(6)}<br />
                   Longitude: {marker.lng.toFixed(6)}
                 </div>
@@ -150,11 +175,38 @@ const MapApp = () => {
       {selectedMarker && (
         <div className="absolute bottom-4 left-4 bg-white p-4 rounded-lg shadow-lg">
           <h3 className="font-bold mb-2">Marker Information</h3>
+          {isEditingMarker ? (
+            <input 
+              type="text"
+              defaultValue={selectedMarker.label}
+              onBlur={(e) => handleSaveMarker(e.target.value)}
+              className="p-2 border border-gray-300 rounded-md"
+            />
+          ) : (
+            <p><strong>{selectedMarker.label}</strong></p>
+          )}
           <p>Latitude: {selectedMarker.lat.toFixed(6)}</p>
           <p>Longitude: {selectedMarker.lng.toFixed(6)}</p>
-          <MacOSButton onClick={handleClosePopup} className="mt-2">
-            Close
-          </MacOSButton>
+          <div className="flex space-x-2 mt-2">
+            <MacOSButton onClick={handleEditMarker}>
+              <Edit className="h-4 w-4" />
+            </MacOSButton>
+            <MacOSButton onClick={() => handleDeleteMarker(selectedMarker.id)}>
+              <Trash className="h-4 w-4" />
+            </MacOSButton>
+            <MacOSButton onClick={handleClosePopup}>
+              <X className="h-4 w-4" />
+            </MacOSButton>
+          </div>
+        </div>
+      )}
+
+      {/* Route Info Panel */}
+      {routeInfo && (
+        <div className="absolute top-4 right-4 bg-white p-4 rounded-lg shadow-lg">
+          <h3 className="font-bold mb-2">Route Information</h3>
+          <p>Distance: {routeInfo.distance}</p>
+          <p>Duration: {routeInfo.duration}</p>
         </div>
       )}
 
