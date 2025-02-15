@@ -13,10 +13,10 @@ app.use(express.json());
 
 const WILDCARD_API_BASE_URL = 'https://api.gptsapi.net/v1';
 
-// 创建一个代理服务器
+
 const proxy = httpProxy.createProxyServer();
 
-// 代理中间件
+
 app.use('/proxy', (req, res) => {
   let targetUrl = req.url.slice(1);
   
@@ -24,7 +24,7 @@ app.use('/proxy', (req, res) => {
     return res.status(400).send('No target URL provided');
   }
 
-  // 确保 targetUrl 是一个完整的 URL
+
   if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
     targetUrl = 'https://' + targetUrl;
   }
