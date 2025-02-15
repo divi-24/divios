@@ -1,4 +1,9 @@
 import React from 'react';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_API_KEY || "AIzaSyDC_nwnZggf8CYID3qvJfazEE8KBnqd9Ro"; // Fallback API key
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 const AIAssistantLogic = ({
   input,
@@ -13,89 +18,52 @@ const AIAssistantLogic = ({
   uploadedFiles,
   setUploadedFiles,
   scrollToBottom,
-  handleRemoveFile // 添加这个 prop
+  handleRemoveFile,
 }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!input.trim() && uploadedFiles.length === 0) return;
-    if (!selectedModel) return;
 
-    if (uploadedFiles.length > 0) {
-      const newContext = uploadedFiles.map(file => `File: ${file.name}\n\nContent:\n${file.content}`).join('\n\n');
-      setContext(prevContext => {
-        const updatedContext = prevContext ? `${prevContext}\n\n${newContext}` : newContext;
-        sendMessage(updatedContext);
-        return updatedContext;
-      });
-      setUploadedFiles([]);
-    } else {
-      sendMessage(context);
-    }
-  };
-
-  const sendMessage = async (currentContext) => {
-    let userMessage = { role: 'user', content: input };
-    setMessages(prevMessages => [...prevMessages, userMessage]);
-    setInput('');
     setIsLoading(true);
 
-    let aiMessage = { role: 'assistant', content: '' };
-    setMessages(prevMessages => [...prevMessages, aiMessage]);
+    // Add user message to the chat
+    const userMessage = { role: 'user', content: input };
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
+    setInput('');
+
+    // Add a placeholder for the AI's response
+    const aiMessage = { role: 'assistant', content: '' };
+    setMessages((prevMessages) => [...prevMessages, aiMessage]);
 
     try {
-      const response = await fetch('http://localhost:3001/api/chat/stream', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.REACT_APP_API_KEY}`
-        },
-        body: JSON.stringify({
-          model: selectedModel,
-          messages: [
-            { role: 'system', content: `Context: ${currentContext}` },
-            ...messages,
-            userMessage
-          ]
-        })
-      });
+      // Combine context, uploaded files, and chat history
+      const fullContext = [
+        context,
+        ...uploadedFiles.map((file) => `File: ${file.name}\nContent: ${file.content}`),
+        ...messages.map((msg) => `${msg.role}: ${msg.content}`),
+        `user: ${input}`,
+      ].join('\n\n');
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
+      // Send the prompt to Gemini
+      const result = await model.generateContent(fullContext);
+      const response = await result.response;
+      const text = response.text();
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
-
-        for (const line of lines) {
-          if (line.startsWith('data:')) {
-            const content = line.slice(6);
-            if (content === "[DONE]") {
-              return;
-            }
-            try {
-              const jsonData = JSON.parse(line.slice(5));
-              if (jsonData.choices && jsonData.choices[0].delta.content) {
-                aiMessage.content += jsonData.choices[0].delta.content;
-                setMessages(prevMessages => [
-                  ...prevMessages.slice(0, -1),
-                  { ...aiMessage }
-                ]);
-                scrollToBottom();
-              }
-            } catch (error) {
-              console.error('Error parsing JSON:', error);
-            }
-          }
-        }
-      }
+      // Update the AI's message with the response
+      setMessages((prevMessages) => [
+        ...prevMessages.slice(0, -1),
+        { ...aiMessage, content: text },
+      ]);
     } catch (error) {
-      console.error('Error:', error);
-      setMessages(prevMessages => [...prevMessages, { role: 'system', content: 'Sorry, there was an error processing your request.' }]);
+      console.error('Error generating response:', error);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { role: 'system', content: 'Sorry, there was an error processing your request.' },
+      ]);
     } finally {
       setIsLoading(false);
+      scrollToBottom();
+      setUploadedFiles([]); // Clear uploaded files after processing
     }
   };
 

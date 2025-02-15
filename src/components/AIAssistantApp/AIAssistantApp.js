@@ -10,7 +10,7 @@ const AIAssistantApp = ({ onClose }) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [models, setModels] = useState([]);
-  const [selectedModel, setSelectedModel] = useState('');
+  const [selectedModel, setSelectedModel] = useState('gemini-1.5-flash'); // Default model
   const [notification, setNotification] = useState(null);
   const [context, setContext] = useState(() => {
     const savedContext = localStorage.getItem('chatContext');
@@ -20,10 +20,6 @@ const AIAssistantApp = ({ onClose }) => {
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   const notificationRef = useRef(null);
-
-  useEffect(() => {
-    fetchModels();
-  }, []);
 
   useEffect(() => {
     scrollToBottom();
@@ -44,24 +40,6 @@ const AIAssistantApp = ({ onClose }) => {
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const fetchModels = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/api/models', {
-        headers: { 'Authorization': `Bearer ${process.env.REACT_APP_API_KEY}` }
-      });
-      const data = await response.json();
-      const sortedModels = data.data.sort((a, b) => {
-        if (a.id.toLowerCase().startsWith('Divi') && !b.id.toLowerCase().startsWith('Divi')) return -1;
-        if (!a.id.toLowerCase().startsWith('Divi') && b.id.toLowerCase().startsWith('Divi')) return 1;
-        return a.id.localeCompare(b.id);
-      });
-      setModels(sortedModels);
-      setSelectedModel(sortedModels[0]?.id);
-    } catch (error) {
-      console.error('Error fetching models:', error);
     }
   };
 
