@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 const Window = ({ id, title, children, onClose, onMinimize, onFocus, zIndex, isActive, isMinimized, initialSize = { width: 600, height: 400 } }) => {
   const [isMaximized, setIsMaximized] = useState(false);
   const [size, setSize] = useState(initialSize);
-  const [position, setPosition] = useState({ x: 100, y: 100 });
+  const [position, setPosition] = useState({ x: 100, y: 5 });
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [isInteractingWithContent, setIsInteractingWithContent] = useState(false);
@@ -17,7 +17,7 @@ const Window = ({ id, title, children, onClose, onMinimize, onFocus, zIndex, isA
         setPosition({ x: 0, y: 0 });
         setSize({ width: window.innerWidth, height: window.innerHeight });
       } else {
-        setPosition({ x: 100, y: 100 });
+        setPosition({ x: 100, y: 5 });
         setSize(initialSize);
       }
       return !prev;
