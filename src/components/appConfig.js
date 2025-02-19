@@ -30,6 +30,10 @@ import ImageConverter from './ImageConverter';
 import DevTools from './DevTools';
 import CSSHelper from './CSSHelper';
 import FrameworkExplorer from './FrameworkExplorer';
+import AppStore from './AppStore';
+import GitHubDesktop from './GitHubDesktop';
+import Chrome from './Chrome';
+
 const appConfig = [
   {
     name: 'Shader Cards',
@@ -229,6 +233,27 @@ const appConfig = [
     icon: '📝',
     component: Notepad,
     defaultSize: { width: 600, height: 400 },
+    showInDock: true,
+  },
+  {
+    name: 'App Store',
+    icon: '🛍️', // Shopping bag emoji
+    component: AppStore,
+    defaultSize: { width: 1000, height: 800 },
+    showInDock: true,
+  },
+  {
+    name: 'GitHub Desktop',
+    icon: '🐙', // Octopus emoji for GitHub
+    component: GitHubDesktop,
+    defaultSize: { width: 1200, height: 800 },
+    showInDock: true,
+  },
+  {
+    name: 'Chrome',
+    icon: '🌍',
+    component: Chrome,
+    defaultSize: { width: 1200, height: 800 },
     showInDock: true,
   }
 ];
